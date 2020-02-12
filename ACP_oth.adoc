@@ -104,7 +104,7 @@ Cледующим действием - запуск АЦП на преобраз
     std::cout << "Count: " << data1 << " Temperature: " << temperature << std::endl ;
     
     
-image::images/temp.png[]
+image::temp.png[]
 
 В данном случае температура в моей комнате 25 градусов цельсия.
 
