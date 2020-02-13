@@ -495,8 +495,12 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 <div class="literalblock">
 <div class="content">
-<pre>ADC_Common::CCR::TSVREFE::Enable::Set();</pre>
+<pre>ADC_Common::CCR::TSVREFE::Enable::Set();
+GPIOA::MODER::MODER0::Analog::Set();</pre>
 </div>
+</div>
+<div class="paragraph">
+<p>Первая строка - включение сенсора температуры, вторая - настройка порта для работы в аналоговом режиме.</p>
 </div>
 <div class="paragraph">
 <p>В ходе работы производили измерение температуры, и поэтому подключали температурный сенсор (датчик), про него все рассказывается на странице 225.</p>
@@ -529,21 +533,18 @@ ADC1::CR2::EOCS::SingleConversion::Set();</pre>
 </div>
 </li>
 <li>
-<p>Установить количество измерений 1 в регистре ADC1::SQR1 бит L, в программе установлено количество измерений 2, потому что ещё измеряли напряжение.</p>
+<p>Установить количество измерений 1 в регистре ADC1::SQR1 бит L.</p>
 <div class="literalblock">
 <div class="content">
-<pre>ADC1::SQR3::SQ2::Channel0::Set();
-ADC1::SQR3::SQ1::Channel18::Set();</pre>
+<pre>ADC1::SQR3::SQ1::Channel18::Set();</pre>
 </div>
 </div>
 </li>
 <li>
-<p>Выбрать канал для первого преобразования в регистре ADC1::SQR3 биты SQ1
-Тут уже выбран канал 18 для измерения напряжения, а канал 0 (Channel0) - для измерения температуры</p>
+<p>Выбрать канал для первого преобразования в регистре ADC1::SQR3 биты SQ1</p>
 <div class="literalblock">
 <div class="content">
-<pre>ADC1::SMPR2::SMP0::Cycles480::Set();
- ADC1::SMPR1::SMP18::Cycles480::Set();</pre>
+<pre>ADC1::SMPR1::SMP18::Cycles480::Set();</pre>
 </div>
 </div>
 </li>
@@ -577,13 +578,11 @@ ADC1::SQR3::SQ1::Channel18::Set();</pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Исходя из этих данных, выводим формулу для измерения температуры(заодно добавил напряжение, под K1,B1, такие значения, потому что напряжение меняется от 0 до 3.3В)</p>
+<p>Исходя из этих данных, выводим формулу для измерения температуры.</p>
 </div>
 <div class="literalblock">
 <div class="content">
-<pre>constexpr float B1 = 0; //; - napg
-constexpr float K1 = 3.3F/4096.0F; // - napg
-constexpr float B2 = (25.0F-0.76F/0.0025F); -tempa
+<pre>constexpr float B2 = (25.0F-0.76F/0.0025F); -tempa
 constexpr float K2 = ((3.3F/4096.0F)/0.0025F); -tempa</pre>
 </div>
 </div>
@@ -620,11 +619,11 @@ std::cout &lt;&lt; "Count: " &lt;&lt; data1 &lt;&lt; " Temperature: " &lt;&lt; t
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="Photo/images/temp.png" alt="temp">
+<img src="Photo/tempt_1.png" alt="tempt 1">
 </div>
 </div>
 <div class="paragraph">
-<p>В данном случае температура в моей комнате 25 градусов цельсия.</p>
+<p>UPD: <em>скорость дисретизации стоит 480, циклов 12, а почему такой разброс непонятно :с, но по коду и по значениям хотя бы более лучше, чем 940 и 1500 :)</em></p>
 </div>
 <div class="sect3">
 <h4 id="trueтемпература-и-напряжение"><a class="anchor" href="#trueтемпература-и-напряжение"></a>Температура и напряжение</h4>
@@ -638,8 +637,8 @@ std::cout &lt;&lt; "Count: " &lt;&lt; data1 &lt;&lt; " Temperature: " &lt;&lt; t
 </div>
 <div class="literalblock">
 <div class="content">
-<pre>ADC1::SQR3::SQ2::Channel0::Set(); //podkluchili datchik na kanal 18
-ADC1::SQR3::SQ1::Channel18::Set(); //podkluchili datchik na kanal 18</pre>
+<pre>ADC1::SQR3::SQ2::Channel0::Set(); //podkluchili datchik na kanal 0 напряжение
+ADC1::SQR3::SQ1::Channel18::Set(); //podkluchili datchik na kanal 18 температура</pre>
 </div>
 </div>
 <div class="literalblock">
@@ -720,7 +719,7 @@ std::cout &lt;&lt; "Count: " &lt;&lt; data2 &lt;&lt; " voltage: " &lt;&lt; volta
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-02-12 18:09:25 +0500
+Last updated 2020-02-13 17:46:12 +0500
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/github.min.css">
