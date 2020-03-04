@@ -170,3 +170,63 @@ image::temravolt.png[]
     }
   
 image::cat.png[]
+
+= Калибровка
+
+Задача стояла в том, чтобы сделать калибровку.
+
+В библии прописаны калибровочные значения датчика температуры и опорного напряжения
+
+image::tem1p.png[]
+
+image::v.png[]
+
+Для 30 градусов и 110, соответственно.
+
+И задача стояла в калибровке, а раз были даны адреса, то нужно было использовать указатели и всё, что с ними было связано (__очень мудрые и умные вещи__)
+
+В итоге получается вот такое вот:
+
+image::temp1.png[]
+
+Получившийся код с указателями:
+
+image::code.png[]
+
+Сам код:
+
+  for(;;)    
+  {
+    //Start conversion
+    ADC1::CR2::SWSTART::On::Set();
+    
+    //----------Reference voltage-----------------------------------------------
+    // wait until Conversion is not complete 
+    while(!ADC1::SR::EOC::ConversionComplete::IsSet())
+    {};
+    Vref =  ADC1::DR::Get(); //Get data from ADC;
+    
+    //----------Temperature-----------------------------------------------------
+    // wait until Conversion is not complete 
+    while(!ADC1::SR::EOC::ConversionComplete::IsSet())
+    {};
+    ADC_C =  ADC1::DR::Get(); //Get data from ADC;
+    //without calibration
+    temperature = ADC_C * K + B ; //Convert ADC counts to temperature
+    
+    //temperature sensor calibration
+    temperature1 = ADC_C * (110-30)/(TsCal2 - TsCal1) + (30 - (110-30)*TsCal1/(TsCal2- TsCal1) );
+    
+    //temperature sensor and internal reference voltage calibration
+    temperature2 = ADC_C * (110-30)*VrefCal/(Vref*(TsCal2-TsCal1)) + DEGREE_30 - (110-30)*TsCal1/(TsCal2-TsCal1) ; //Convert ADC counts to temperature
+
+    //----------I/O-------------------------------------------------------------
+    cout << "\nTemperature \nWithoutcalibration: " << temperature << " \nWith temperature sensor : " << temperature1 << " \nWith temperature sensor and reference voltage calibration: " << temperature2 << endl ;
+     }
+    return 0;  
+    }
+    
+    
+    
+
+image::cat_1.png[]

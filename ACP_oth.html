@@ -716,10 +716,106 @@ std::cout &lt;&lt; "Count: " &lt;&lt; data2 &lt;&lt; " voltage: " &lt;&lt; volta
 </div>
 </div>
 </div>
+<h1 id="trueкалибровка" class="sect0"><a class="anchor" href="#trueкалибровка"></a>Калибровка</h1>
+<div class="paragraph">
+<p>Задача стояла в том, чтобы сделать калибровку.</p>
+</div>
+<div class="paragraph">
+<p>В библии прописаны калибровочные значения датчика температуры и опорного напряжения</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="Photo/tem1p.png" alt="tem1p">
+</div>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="Photo/v.png" alt="v">
+</div>
+</div>
+<div class="paragraph">
+<p>Для 30 градусов и 110, соответственно.</p>
+</div>
+<div class="paragraph">
+<p>И задача стояла в калибровке, а раз были даны адреса, то нужно было использовать указатели и всё, что с ними было связано (<em>очень мудрые и умные вещи</em>)</p>
+</div>
+<div class="paragraph">
+<p>В итоге получается вот такое вот:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="Photo/temp1.png" alt="temp1">
+</div>
+</div>
+<div class="paragraph">
+<p>Получившийся код с указателями:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="Photo/code.png" alt="code">
+</div>
+</div>
+<div class="paragraph">
+<p>Сам код:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>for(;;)
+{
+  //Start conversion
+  ADC1::CR2::SWSTART::On::Set();</pre>
+</div>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>//----------Reference voltage-----------------------------------------------
+// wait until Conversion is not complete
+while(!ADC1::SR::EOC::ConversionComplete::IsSet())
+{};
+Vref =  ADC1::DR::Get(); //Get data from ADC;</pre>
+</div>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>//----------Temperature-----------------------------------------------------
+// wait until Conversion is not complete
+while(!ADC1::SR::EOC::ConversionComplete::IsSet())
+{};
+ADC_C =  ADC1::DR::Get(); //Get data from ADC;
+//without calibration
+temperature = ADC_C * K + B ; //Convert ADC counts to temperature</pre>
+</div>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>//temperature sensor calibration
+temperature1 = ADC_C * (110-30)/(TsCal2 - TsCal1) + (30 - (110-30)*TsCal1/(TsCal2- TsCal1) );</pre>
+</div>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>//temperature sensor and internal reference voltage calibration
+temperature2 = ADC_C * (110-30)*VrefCal/(Vref*(TsCal2-TsCal1)) + DEGREE_30 - (110-30)*TsCal1/(TsCal2-TsCal1) ; //Convert ADC counts to temperature</pre>
+</div>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>//----------I/O-------------------------------------------------------------
+cout &lt;&lt; "\nTemperature \nWithoutcalibration: " &lt;&lt; temperature &lt;&lt; " \nWith temperature sensor : " &lt;&lt; temperature1 &lt;&lt; " \nWith temperature sensor and reference voltage calibration: " &lt;&lt; temperature2 &lt;&lt; endl ;
+ }
+return 0;
+}</pre>
+</div>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="Photo/cat_1.png" alt="cat 1">
+</div>
+</div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-02-13 17:46:12 +0500
+Last updated 2020-03-04 19:51:43 +0500
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/github.min.css">

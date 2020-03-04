@@ -1,0 +1,15 @@
+"D:\Kolody\iar\arm\bin\armproc.dll" 
+
+"D:\Kolody\iar\arm\bin\armstlink2.dll" 
+
+"D:\POIP\Git_hub\ACP_oth\Lab6(с калибровкой)\Debug\Exe\LAB.out" 
+
+--plugin="D:\Kolody\iar\arm\bin\armbat.dll" 
+
+--device_macro="D:\Kolody\iar\arm\config\debugger\ST\STM32F4xx.dmac" 
+
+--flash_loader="D:\Kolody\iar\arm\config\flashloader\ST\FlashSTM32F411xE.board" 
+
+
+
+
